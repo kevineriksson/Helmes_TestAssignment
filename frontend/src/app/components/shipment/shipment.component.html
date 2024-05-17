@@ -1,0 +1,88 @@
+<!-- src/app/components/shipment-manager/shipment-manager.component.html -->
+<div class="container">
+    <h1>Create Shipments</h1>
+    <form [formGroup]="shipmentForm" (ngSubmit)="saveShipment()">
+        <div class="form-group">
+            <label for="id">Shipment Number</label>
+            <input type="text" id="id" formControlName="id" class="form-control" required [disabled]="isEditing">
+            <div *ngIf="shipmentForm.get('id')?.invalid && shipmentForm.get('id')?.touched">
+                <div *ngIf="shipmentForm.get('id')?.errors?.['required']">Shipment number is required</div>
+                <div *ngIf="shipmentForm.get('id')?.errors?.['pattern']">Invalid format: has to be xxx-xxxxxx</div>
+            </div>
+            
+            <label for="airportCode">Airport Code</label>
+            <select id="airportCode" formControlName="airportCode" class="form-control" [disabled]="shipmentForm.get('finalized')?.value">
+                <option value="RIX">Riga, RIX</option>
+                <option value="TLN">Tallinn, TLN</option>
+                <option value="HEL">Helsinki, HEL</option>
+            </select>
+
+            <label for="flightNumber">Flight Number</label>
+            <input type="text" id="flightNumber" formControlName="flightNumber" class="form-control" required [disabled]="shipmentForm.get('finalized')?.value">
+            <div *ngIf="shipmentForm.get('flightNumber')?.invalid && shipmentForm.get('flightNumber')?.touched">
+                <div *ngIf="shipmentForm.get('flightNumber')?.errors?.['required']">Flight number is required</div>
+                <div *ngIf="shipmentForm.get('flightNumber')?.errors?.['pattern']">Invalid format - format has to be llnnnn</div>
+            </div>
+
+            <label for="flightDate">Flight Date</label>
+            <input type="date" id="flightDate" formControlName="flightDate" class="form-control" required [disabled]="shipmentForm.get('finalized')?.value">
+            <div *ngIf="shipmentForm.get('flightDate')?.invalid && shipmentForm.get('flightDate')?.touched">
+                <div *ngIf="shipmentForm.get('flightDate')?.errors?.['required']">Flight date is required</div>
+                <div *ngIf="shipmentForm.get('flightDate')?.errors?.['pastDate']">Flight date cannot be in the past</div>
+            </div>
+
+            <label for="finalized">Finalized</label>
+            <input type="checkbox" id="finalized" formControlName="finalized" class="form-control" [disabled]="true">
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="shipmentForm.invalid || shipmentForm.get('finalized')?.value">Save Shipment</button>
+        <button type="button" class="btn btn-warning" (click)="resetShipmentForm()" [disabled]="shipmentForm.get('finalized')?.value">Reset</button>
+    </form>
+    <!-- Conditionally show BagManagerComponent -->
+    <app-bag-manager 
+    (resetShipmentForm)="resetShipmentForm()"  
+    *ngIf="shipmentSaved && !shipmentForm.get('finalized')?.value" 
+    [shipmentId]="shipmentId"></app-bag-manager>
+    <div class="shipments-list">
+        <h2>Shipments List</h2>
+        <ul>
+            <li *ngFor="let shipment of shipments">
+                <div>
+                    <label>Shipment ID: </label> 
+                    <span>{{ shipment.id }}</span> <br>
+                    <label>Airport Code: </label> 
+                    <span>{{ shipment.airportCode }}</span> <br>
+                    <label>Flight Number: </label> 
+                    <span>{{ shipment.flightNumber }}</span> <br>
+                    <label>Flight Date: </label> 
+                    <span>{{ shipment.flightDate | date:'shortDate' }}</span> <br>
+                    <label>Finalized: </label> 
+                    <span>{{ shipment.finalized ? 'Yes' : 'No' }}</span> <br>
+                    <button type="button" (click)="toggleBags(shipment)" [disabled]="shipment.finalized">
+                        {{ shipment.showBags ? 'Hide Bags' : 'Show Bags' }}
+                    </button>
+                    <button type="button" (click)="editShipment(shipment.id)" [disabled]="shipment.finalized">Edit Shipment</button>
+                    <button type="button" (click)="deleteShipment(shipment)" [disabled]="shipment.finalized">Delete Shipment</button>
+                    <button type="button" (click)="finalizeShipment(shipment.id)" [disabled]="shipment.finalized">Finalize Shipment</button>
+                </div>
+                
+                <div class="bags-list">
+                    <ul *ngIf="shipment.showBags && shipment.bags && shipment.bags.length > 0">
+                        <li *ngFor="let bag of shipment.bags">
+                        <div>
+                            <label>Bag ID: </label>
+                            <span>{{ bag.id }}</span> <br>
+                            <label>Bag Type: </label>
+                            <span>{{ bag.bagType }}</span> <br>
+                            <span *ngIf="bag.bagType === 'parcel'">Parcel Count: {{ bag.parcelCount }}</span>
+                            <!-- <button *ngIf="shipmentSaved === true" button (click)="editBag(bag.id)">Edit Bag</button> -->
+                        </div>
+                        </li>
+                    </ul>
+                    <div *ngIf="shipment.showBags && (!shipment.bags || shipment.bags.length === 0)">
+                        No bags available for this shipment.
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

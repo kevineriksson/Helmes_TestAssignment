@@ -1,0 +1,17 @@
+<div class="parcel-form">
+  <form [formGroup]="parcelForm" (ngSubmit)="saveParcels()">
+    <button type="button" (click)="addParcel()">Add Parcel</button>
+
+    <div formArrayName="parcels">
+      <div *ngFor="let parcel of parcels.controls; let i = index" [formGroupName]="i">
+        <input formControlName="id" placeholder="Parcel ID">
+        <input formControlName="recipientName" placeholder="Recipient Name">
+        <input formControlName="destinationCountry" placeholder="Destination Country">
+        <input formControlName="weight" placeholder="Weight">
+        <input formControlName="price" placeholder="Price">
+      </div>
+    </div>
+
+    <button type="submit">Save All Parcels</button>
+  </form>
+</div>
