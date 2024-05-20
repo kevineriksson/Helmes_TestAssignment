@@ -10,6 +10,6 @@ namespace PostOfficeAPI.Models.Dto
         public string AirportCode { get; set; }
         public string FlightNumber { get; set; }
         public DateTime FlightDate { get; set; }
-        public bool IsFinalized { get; set; }
+        //public bool IsFinalized { get; set; }
     }
 }

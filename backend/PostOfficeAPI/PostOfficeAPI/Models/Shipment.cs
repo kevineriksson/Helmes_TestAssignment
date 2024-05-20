@@ -23,6 +23,6 @@ namespace PostOfficeAPI.Models
         [Required]
         public DateTime FlightDate { get; set; }
         public List<Bag> Bags { get; set; }
-        public bool isFinalized { get; set; }
+        //public bool isFinalized { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace PostOfficeAPI.Repos
             var shipment = await GetShipmentByIdAsync(id);
             if (shipment != null)
             {
-                shipment.isFinalized = true;
+                //shipment.isFinalized = true;
                 await _dbContext.SaveChangesAsync();
             }
         }
