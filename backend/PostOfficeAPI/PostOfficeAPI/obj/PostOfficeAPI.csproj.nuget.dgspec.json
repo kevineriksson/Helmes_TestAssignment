@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kevin\\Desktop\\PostOfficeApp\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj": {}
+    "C:\\Users\\kevin\\Source\\Repos\\Helmes_TestAssignment\\backend\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kevin\\Desktop\\PostOfficeApp\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj": {
+    "C:\\Users\\kevin\\Source\\Repos\\Helmes_TestAssignment\\backend\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kevin\\Desktop\\PostOfficeApp\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj",
+        "projectUniqueName": "C:\\Users\\kevin\\Source\\Repos\\Helmes_TestAssignment\\backend\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj",
         "projectName": "PostOfficeAPI",
-        "projectPath": "C:\\Users\\kevin\\Desktop\\PostOfficeApp\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj",
+        "projectPath": "C:\\Users\\kevin\\Source\\Repos\\Helmes_TestAssignment\\backend\\PostOfficeAPI\\PostOfficeAPI\\PostOfficeAPI.csproj",
         "packagesPath": "C:\\Users\\kevin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kevin\\Desktop\\PostOfficeApp\\PostOfficeAPI\\PostOfficeAPI\\obj\\",
+        "outputPath": "C:\\Users\\kevin\\Source\\Repos\\Helmes_TestAssignment\\backend\\PostOfficeAPI\\PostOfficeAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

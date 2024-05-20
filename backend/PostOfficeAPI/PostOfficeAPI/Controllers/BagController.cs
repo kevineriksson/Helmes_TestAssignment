@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
-using PostOfficeAPI.Contracts.Services;
-using PostOfficeAPI.Models;
-using PostOfficeAPI.Services;
+using PostOfficeAPI.ApplicationCore.Contracts.Services;
+using PostOfficeAPI.ApplicationCore.Models;
 
 namespace PostOfficeAPI.Controllers
 {
@@ -37,7 +36,7 @@ namespace PostOfficeAPI.Controllers
         [HttpGet("getBagsByShipmentId/{id}")]
         public async Task<ActionResult<Bag>> GetBagsByShipmentId(string id)
         {
-            var bags = await _bagService.GetBagsByShimpentId(id);
+            var bags = await _bagService.GetBagsByShimpentIdAsync(id);
             if (bags == null || !bags.Any())
                 return NotFound("No bags found.");
             return Ok(bags);

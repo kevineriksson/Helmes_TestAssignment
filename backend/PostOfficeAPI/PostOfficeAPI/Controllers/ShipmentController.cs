@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PostOfficeAPI.Contracts.Services;
-using PostOfficeAPI.Models;
-using PostOfficeAPI.Models.Dto;
+using PostOfficeAPI.ApplicationCore.Contracts.Services;
+using PostOfficeAPI.ApplicationCore.Models;
+using PostOfficeAPI.ApplicationCore.Models.Dto;
 
 namespace PostOfficeAPI.Controllers
 {
