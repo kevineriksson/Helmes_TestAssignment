@@ -21,16 +21,12 @@ export class ParcelService {
   getParcelsByBagId(id: string): Observable<Parcel[]> {
     return this.http.get<Parcel[]>(`${this.apiUrl}/${id}`);
   }
-
-
   createParcel(parcel: Parcel): Observable<Parcel> {
     return this.http.post<Parcel>(this.apiUrl, parcel);
   }
-
   updateParcel(parcel: Parcel): Observable<Parcel> {
     return this.http.put<Parcel>(`${this.apiUrl}/${parcel.id}`, parcel);
   }
-
   deleteParcel(id: string): Observable<Parcel> {
     return this.http.delete<Parcel>(`${this.apiUrl}/${id}`);
   }

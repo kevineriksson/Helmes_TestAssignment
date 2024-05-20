@@ -19,7 +19,11 @@ export class BagManagerComponent implements OnInit {
   @Input() shipmentId: string = '';
   @Output() resetShipmentForm = new EventEmitter<void>();
 
-  constructor(private bagService: BagService, private parcelService: ParcelService, private fb: FormBuilder) { }
+  constructor(
+    private bagService: BagService, 
+    private parcelService: ParcelService, 
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -30,15 +34,13 @@ export class BagManagerComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['bagType']) {
-      console.log("bagtype changed to:", this.bagForm.get('bagType')?.value);
-    }
     if (changes['shipmentId'] && changes['shipmentId'].currentValue) {
       this.loadBags(changes['shipmentId'].currentValue);
+      console.log('ShipmentId changed to:', changes['shipmentId'].currentValue);
     }
   }
 
-  loadBags(shipmentId: string): void {
+  private loadBags(shipmentId: string): void {
     this.bagService.getBagsByShipmentId(shipmentId).subscribe(bags => {
       const bagFGs = bags.map(bag => this.fb.group(bag));
       const bagFormArray = this.fb.array(bagFGs);
@@ -46,7 +48,7 @@ export class BagManagerComponent implements OnInit {
     });
   }
 
-  initForm(): void {
+  private initForm(): void {
     this.bagForm = this.fb.group({
       bagId: ['', [Validators.required, Validators.maxLength(15), Validators.pattern(/^[a-zA-Z0-9]*$/)]],
       bagType: ['', [Validators.required, Validators.pattern(/^(parcel|letter)$/)]],
@@ -70,20 +72,9 @@ export class BagManagerComponent implements OnInit {
     });
   }
 
-  
   toggleParcels(bag: any): void {
     if (!bag.parcels) {
-      bag.parcels = [];
-      this.parcelService.getParcelsByBagId(bag.id).subscribe({
-        next: (parcels) => {
-          bag.parcels = parcels;
-          bag.showParcels = true;
-        },
-        error: (error) => {
-          console.error('Failed to load parcels:', error);
-          bag.showParcels = true;
-        }
-      });
+      this.loadParcels(bag.id);
     } else if (bag.bagType === 'letter') {
       bag.showParcels = true;
     } else {
@@ -91,20 +82,47 @@ export class BagManagerComponent implements OnInit {
     }
   }
 
-  updateFormControls(type: string): void {
-    if (type === 'parcel') {
-      this.bagForm.removeControl('letterCount');
-      this.bagForm.removeControl('weight');
-      this.bagForm.removeControl('price');
-      this.bagForm.addControl('parcels', this.fb.array([]));
-    } else if (type === 'letter') {
-      this.bagForm.removeControl('parcels');
-      this.bagForm.addControl('letterCount', this.fb.control('', [Validators.required, Validators.min(1)]));
-      this.bagForm.addControl('weight', this.fb.control('', [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d{1,3})?$/)]));
-      this.bagForm.addControl('price', this.fb.control('', [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d{1,2})?$/)]));
-    }
+  private loadParcels(bag: any): void {
+    this.parcelService.getParcelsByBagId(bag.id).subscribe({
+      next: (parcels) => {
+        bag.parcels = parcels;
+        bag.showParcels = true;
+      },
+      error: (error) => {
+        console.error('Failed to load parcels:', error);
+        bag.showParcels = true;
+      }
+    });
   }
 
+  private updateFormControls(type: string): void {
+    if (type === 'parcel') {
+      this.removeLetterControls();
+      this.addParcelControls();
+    } else if (type === 'letter') {
+      this.removeParcelControls();
+      this.addLetterControls();
+    }
+  }
+  private removeLetterControls(): void {
+    this.bagForm.removeControl('letterCount');
+    this.bagForm.removeControl('weight');
+    this.bagForm.removeControl('price');
+  }
+
+  private addLetterControls(): void {
+    this.bagForm.addControl('letterCount', this.fb.control('', [Validators.required, Validators.min(1)]));
+    this.bagForm.addControl('weight', this.fb.control('', [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d{1,3})?$/)]));
+    this.bagForm.addControl('price', this.fb.control('', [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d{1,2})?$/)]));
+  }
+
+  private removeParcelControls(): void {
+    this.bagForm.removeControl('parcels');
+  }
+
+  private addParcelControls(): void {
+    this.bagForm.addControl('parcels', this.fb.array([]));
+  }
   saveBag(): void {
     if (this.bagForm.invalid) {
       console.error('Form is not valid:', this.bagForm.errors);
@@ -120,12 +138,7 @@ export class BagManagerComponent implements OnInit {
     this.showBags();
   }
 
-  resetBagForm(): void {
-    this.bagForm.reset();
-    this.bagSaved = false;
-  }
-
-  saveParcelBag(): void {
+  private saveParcelBag(): void {
     const parcelBagData: BagWithParcels = {
       id: this.bagForm.get('bagId')?.value,
       bagType: 'parcel',
@@ -140,7 +153,7 @@ export class BagManagerComponent implements OnInit {
     });
   }
 
-  saveLetterBag(): void {
+  private saveLetterBag(): void {
     const letterBagData: BagWithLetters = {
       id: this.bagForm.get('bagId')?.value,
       shipmentId: this.shipmentId,
@@ -153,5 +166,9 @@ export class BagManagerComponent implements OnInit {
       next: (response) => console.log('Letter bag saved successfully:', response),
       error: (error) => console.error('Error saving letter bag:', error)
     });
+  }
+  resetBagForm(): void {
+    this.bagForm.reset();
+    this.bagSaved = false;
   }
 }

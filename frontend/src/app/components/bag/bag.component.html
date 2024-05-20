@@ -1,51 +1,50 @@
 <div class="container">
-    <h3>Add Bags to Shipment</h3>
-    <form [formGroup]="bagForm" (ngSubmit)="saveBag()">
-      <div class="form-group">
-        <label for="bagId">Bag ID</label>
-        <input type="text" id="bagId" formControlName="bagId" class="form-control" required>
-        <div *ngIf="bagForm.get('bagId')?.invalid && bagForm.get('bagId')?.touched">
-          <div *ngIf="bagForm.get('bagId')?.errors?.['required']">Bag ID is required</div>
-          <div *ngIf="bagForm.get('bagId')?.errors?.['maxlength']">Bag ID must be at most 15 characters long</div>
-          <div *ngIf="bagForm.get('bagId')?.errors?.['pattern']">Bag ID must contain only alphanumeric characters</div>
-        </div>
-
-        <label for="bagType">Bag Type</label>
-        <select id="bagType" formControlName="bagType" class="form-control">
-          <option value="letter">Letter Bag</option>
-          <option value="parcel">Parcel Bag</option>
-        </select>
+  <h3>Add Bags to Shipment</h3>
+  <form [formGroup]="bagForm" (ngSubmit)="saveBag()">
+    <div class="form-group">
+      <label for="bagId">Bag ID</label>
+      <input type="text" placeholder="Bag id" id="bagId" formControlName="bagId" class="form-control" required>
+      <div *ngIf="bagForm.get('bagId')?.invalid && bagForm.get('bagId')?.touched">
+        <div *ngIf="bagForm.get('bagId')?.errors?.['required']">Bag ID is required</div>
+        <div *ngIf="bagForm.get('bagId')?.errors?.['maxlength']">Bag ID must be at most 15 characters long</div>
+        <div *ngIf="bagForm.get('bagId')?.errors?.['pattern']">Bag ID must contain only alphanumeric characters</div>
       </div>
 
-      <div class="form-group" *ngIf="bagForm.get('bagType')?.value === 'letter'">
-        <label for="letterCount">Number of Letters</label>
-        <input type="number" id="letterCount" formControlName="letterCount" class="form-control" required>
-        <div *ngIf="bagForm.get('letterCount')?.invalid && bagForm.get('letterCount')?.touched">
-          <div *ngIf="bagForm.get('letterCount')?.errors?.['required']">Letter Count is required</div>
-          <div *ngIf="bagForm.get('letterCount')?.errors?.['min']">Letter Count must be at least 1</div>
-        </div>
+      <label for="bagType">Bag Type</label>
+      <select id="bagType" formControlName="bagType" class="form-control">
+        <option value="letter">Letter Bag</option>
+        <option value="parcel">Parcel Bag</option>
+      </select>
+    </div>
 
-        <label for="weight">Weight</label>
-        <input type="number" id="weight" formControlName="weight" class="form-control" required>
-        <div *ngIf="bagForm.get('weight')?.invalid && bagForm.get('weight')?.touched">
-          <div *ngIf="bagForm.get('weight')?.errors?.['required']">Weight is required</div>
-          <div *ngIf="bagForm.get('weight')?.errors?.['min']">Weight must be at least 0.01</div>
-          <div *ngIf="bagForm.get('weight')?.errors?.['pattern']">Weight cannot have more than 2 decimal places</div>
-        </div>
-
-        <label for="price">Price</label>
-        <input type="number" id="price" formControlName="price" class="form-control" required>
-        <div *ngIf="bagForm.get('price')?.invalid && bagForm.get('price')?.touched">
-          <div *ngIf="bagForm.get('price')?.errors?.['required']">Price is required</div>
-          <div *ngIf="bagForm.get('price')?.errors?.['min']">Price must be at least 0.01</div>
-          <div *ngIf="bagForm.get('price')?.errors?.['pattern']">Price cannot have more than 2 decimal places</div>
-        </div>
+    <div class="form-group" *ngIf="bagForm.get('bagType')?.value === 'letter'">
+      <label for="letterCount">Number of Letters</label>
+      <input type="number" placeholder="Letter count" id="letterCount" formControlName="letterCount" class="form-control" required>
+      <div *ngIf="bagForm.get('letterCount')?.invalid && bagForm.get('letterCount')?.touched">
+        <div *ngIf="bagForm.get('letterCount')?.errors?.['required']">Letter Count is required</div>
+        <div *ngIf="bagForm.get('letterCount')?.errors?.['min']">Letter Count must be at least 1</div>
       </div>
-  
-      <button type="submit" class="btn btn-success">Save Bag</button>
-      <button type="button" class="btn btn-warning" (click)="resetBagForm()">Reset</button>
-  
-      <app-parcel-manager *ngIf="bagSaved && bagForm.get('bagType')?.value === 'parcel'" (resetBagForm)="resetBagForm()" [bagId]="bagId"></app-parcel-manager>
-    </form>
-  </div>
-  
+
+      <label for="weight">Weight</label>
+      <input type="number" placeholder="Weight" id="weight" formControlName="weight" class="form-control" required>
+      <div *ngIf="bagForm.get('weight')?.invalid && bagForm.get('weight')?.touched">
+        <div *ngIf="bagForm.get('weight')?.errors?.['required']">Weight is required</div>
+        <div *ngIf="bagForm.get('weight')?.errors?.['min']">Weight must be at least 0.01</div>
+        <div *ngIf="bagForm.get('weight')?.errors?.['pattern']">Weight cannot have more than 2 decimal places</div>
+      </div>
+
+      <label for="price">Price</label>
+      <input type="number" placeholder="Price" id="price" formControlName="price" class="form-control" required>
+      <div *ngIf="bagForm.get('price')?.invalid && bagForm.get('price')?.touched">
+        <div *ngIf="bagForm.get('price')?.errors?.['required']">Price is required</div>
+        <div *ngIf="bagForm.get('price')?.errors?.['min']">Price must be at least 0.01</div>
+        <div *ngIf="bagForm.get('price')?.errors?.['pattern']">Price cannot have more than 2 decimal places</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Bag</button>
+    <button type="button" class="btn btn-warning" (click)="resetBagForm()">Reset</button>
+
+    <app-parcel-manager *ngIf="bagSaved && bagForm.get('bagType')?.value === 'parcel'" (resetBagForm)="resetBagForm()" [bagId]="bagId"></app-parcel-manager>
+  </form>
+</div>

@@ -4,11 +4,56 @@
 
     <div formArrayName="parcels">
       <div *ngFor="let parcel of parcels.controls; let i = index" [formGroupName]="i">
-        <input formControlName="id" placeholder="Parcel ID">
-        <input formControlName="recipientName" placeholder="Recipient Name">
-        <input formControlName="destinationCountry" placeholder="Destination Country">
-        <input formControlName="weight" placeholder="Weight">
-        <input formControlName="price" placeholder="Price">
+        <div class="form-group">
+          <label for="parcelId">Parcel ID</label>
+          <input id="parcelId" formControlName="id" placeholder="LLNNNNNNLL" class="form-control">
+          <div *ngIf="parcel.get('id')?.invalid && parcel.get('id')?.touched">
+            <div *ngIf="parcel.get('id')?.errors?.['required']">Parcel ID is required</div>
+            <div *ngIf="parcel.get('id')?.errors?.['invalidParcelId']">Invalid Parcel ID format</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="recipientName">Recipient Name</label>
+          <input id="recipientName" formControlName="recipientName" placeholder="Recipient Name" class="form-control">
+          <div *ngIf="parcel.get('recipientName')?.invalid && parcel.get('recipientName')?.touched">
+            <div *ngIf="parcel.get('recipientName')?.errors?.['required']">Recipient name is required</div>
+            <div *ngIf="parcel.get('recipientName')?.errors?.['maxlength']">Recipient name must not exceed 100 characters</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="destinationCountry">Destination Country</label>
+            <select id="destinationCountry" formControlName="destinationCountry" class="form-control">
+            <option value="RI">Riga, RI</option>
+            <option value="EE">Estonia, EE</option>
+            <option value="FI">Finland, FI</option>
+            </select>
+          <div *ngIf="parcel.get('destinationCountry')?.invalid && parcel.get('destinationCountry')?.touched">
+            <div *ngIf="parcel.get('destinationCountry')?.errors?.['required']">Destination country is required</div>
+            <div *ngIf="parcel.get('destinationCountry')?.errors?.['pattern']">Invalid country code format</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="weight">Weight</label>
+          <input id="weight" formControlName="weight" placeholder="Weight" class="form-control">
+          <div *ngIf="parcel.get('weight')?.invalid && parcel.get('weight')?.touched">
+            <div *ngIf="parcel.get('weight')?.errors?.['required']">Weight is required</div>
+            <div *ngIf="parcel.get('weight')?.errors?.['min']">Weight must be at least 0.1</div>
+            <div *ngIf="parcel.get('weight')?.errors?.['pattern']">Invalid weight format</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input id="price" formControlName="price" placeholder="Price" class="form-control">
+          <div *ngIf="parcel.get('price')?.invalid && parcel.get('price')?.touched">
+            <div *ngIf="parcel.get('price')?.errors?.['required']">Price is required</div>
+            <div *ngIf="parcel.get('price')?.errors?.['min']">Price must be at least 0.01</div>
+            <div *ngIf="parcel.get('price')?.errors?.['pattern']">Invalid price format</div>
+          </div>
+        </div>
       </div>
     </div>
 

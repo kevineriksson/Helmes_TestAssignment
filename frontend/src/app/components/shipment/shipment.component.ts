@@ -5,7 +5,6 @@ import { BagManagerComponent } from '../bag/bag.component';
 import { BagService } from '../../services/bag.service';
 import { ParcelService } from '../../services/parcel.service';
 import { Bag } from '../../models/bag.model';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-shipment-manager',
@@ -19,13 +18,19 @@ export class ShipmentComponent implements OnInit {
   shipmentId: string = '';
   shipmentSaved: boolean = false;
   isEditing: boolean = false;
+
   @ViewChild(BagManagerComponent) bagManager!: BagManagerComponent;
 
-  constructor(private shipmentService: ShipmentService, private bagService: BagService, private parcelService: ParcelService, private fb: FormBuilder) { }
+  constructor(
+    private shipmentService: ShipmentService, 
+    private bagService: BagService, 
+    private parcelService: ParcelService, 
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.showShipments();
+    this.loadShipments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -34,27 +39,30 @@ export class ShipmentComponent implements OnInit {
     }
   }
 
-  initForm(): void {
+  private initForm(): void {
     this.shipmentForm = this.fb.group({
       id: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]{3}-[a-zA-Z0-9]{6}$/)]],
-      airportCode: ['', [Validators.required, Validators.pattern(/^(TLL|RIX|HEL)$/)]],
+      airportCode: ['', [Validators.required, Validators.pattern(/^(TLN|RIX|HEL)$/)]],
       flightNumber: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
       flightDate: ['', [Validators.required, this.futureDateValidator]],
       finalized: [false]
     });
   }
 
-  futureDateValidator(control: AbstractControl): ValidationErrors | null {
+  private futureDateValidator(control: AbstractControl): ValidationErrors | null {
     const date = new Date(control.value);
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     return date >= now ? null : { pastDate: true };
   }
 
-  showShipments(): void {
-    this.shipmentService.getAllShipments().subscribe(shipments => {
-      this.shipments = shipments;
-      console.log('Shipments:', shipments);
+  private loadShipments(): void {
+    this.shipmentService.getAllShipments().subscribe({
+      next: shipments => {
+        this.shipments = shipments;
+        console.log('Shipments:', shipments);
+      },
+    error: (error) => {console.error('Error:', error);}
     });
   }
 
@@ -75,18 +83,12 @@ export class ShipmentComponent implements OnInit {
                 console.error('Error:', error);
             }
         });
-    } else {
-        shipment.showBags = !shipment.showBags;
+    } else { 
+      shipment.showBags = !shipment.showBags;
     }
   }
 
-  editBag(bagId: string): void {
-    this.bagService.getBagById(bagId).subscribe(bag => {
-      this.bagManager.populateBagForm(bag);      
-    });
-  }
-
-  initializeParcelCounts(bags: any[]): void {
+  private initializeParcelCounts(bags: any[]): void {
       for (let bag of bags) {
           if (bag.bagType === 'parcel' && bag.parcelCount == null) {
               this.loadParcelCount(bag);
@@ -94,7 +96,7 @@ export class ShipmentComponent implements OnInit {
       }
   }
 
-  loadParcelCount(bag: any): void {
+  private loadParcelCount(bag: any): void {
       this.parcelService.getParcelsByBagId(bag.id).subscribe({
           next: (parcels) => {
               bag.parcels = parcels;
@@ -110,37 +112,35 @@ export class ShipmentComponent implements OnInit {
     if (this.shipmentForm.invalid) {
       return;
     }
-
     const shipment = this.shipmentForm.value;
-    if (this.isEditing) {
-      this.shipmentService.updateShipment(shipment).subscribe({
-        next: (response) => {
-          const index = this.shipments.findIndex(s => s.id === response.id);
-          if (index !== -1) {
-            this.shipments[index] = response;
-          }
-          this.shipmentSaved = true;
-          this.shipmentId = response.id = '';
-          this.isEditing = false; // Reset editing flag
-          this.shipmentForm.get('id')?.enable(); // Re-enable the id field
-        },
-        error: (error) => {
-          console.error('Error:', error);
-        }
-      });
-    } else {
-      this.shipmentService.createShipment(shipment).subscribe({
-        next: (response) => {
-          this.shipments.push(response);
-          this.shipmentSaved = true;
-          this.shipmentId = response.id = '';
-        },
-        error: (error) => {
-          console.error('Error:', error);
-        }
-      });
-    }
+    this.createShipment(shipment);
   }
+
+  private createShipment(shipment: any): void {
+    this.shipmentService.createShipment(shipment).subscribe({
+      next: (response) => {
+        this.shipments.push(response);
+        this.shipmentSaved = true;
+        alert('Shipment saved successfully!');
+        console.log('Shipment saved:', shipment.id);
+        this.shipmentId = shipment.id;
+      },
+      error: (error) => console.error('Error:', error)
+    });
+  }
+
+  /*private updateShipment(shipment: any): void {
+    this.shipmentService.updateShipment(shipment).subscribe({
+      next: (response) => {
+        const index = this.shipments.findIndex(s => s.id === response.id);
+        if (index !== -1) {
+          this.shipments[index] = response;
+        }
+        this.resetShipmentForm();
+      },
+      error: (error) => console.error('Error:', error)
+    });
+  }*/
 
   deleteShipment(shipment: any): void {
     if (confirm(`Are you sure you want to delete the shipment with ID ${shipment.id}?`)) {
@@ -162,13 +162,13 @@ export class ShipmentComponent implements OnInit {
         airportCode: shipment.airportCode,
         flightNumber: shipment.flightNumber,
         flightDate: shipment.flightDate,
-        finalized: shipment.finalized
+        //finalized: shipment.finalized
       });
 
-      this.shipmentForm.get('id')?.disable(); // Disable the id field
+      this.shipmentForm.get('id')?.disable(); 
       this.shipmentSaved = true;
       this.shipmentId = shipment.id || '';
-      this.isEditing = true; // Set editing flag
+      this.isEditing = true;
     });
   }
   
@@ -187,10 +187,11 @@ export class ShipmentComponent implements OnInit {
       });
     }
   }
+
   resetShipmentForm(): void {
     this.shipmentForm.reset();
     this.shipmentSaved = false;
-    this.isEditing = false; // Reset editing flag
-    this.shipmentForm.get('id')?.enable(); // Re-enable the id field
+    this.isEditing = false;
+    this.shipmentForm.get('id')?.enable();
   }
 }
