@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PostOfficeAPI.Contracts.Services;
+using PostOfficeAPI.ApplicationCore.Contracts.Services;
 
 namespace PostOfficeAPI.Controllers
 {
@@ -27,7 +27,17 @@ namespace PostOfficeAPI.Controllers
             if (parcel == null) return NotFound();
             return Ok(parcel);
         }
+        [HttpPost]
+        public async Task<ActionResult> CreateParcel([FromBody] ParcelDto parcelDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var createdParcel = await _parcelService.CreateParcelAsync(parcelDto);
+            return CreatedAtAction(nameof(GetParcelsById), new { id = createdParcel.Id }, createdParcel);
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateParcel(string id, [FromBody] Parcel parcel)
         {
@@ -48,17 +58,6 @@ namespace PostOfficeAPI.Controllers
                 return NotFound($"Parcel with Id = {id} not found.");
 
             return NoContent();
-        }
-        [HttpPost]
-        public async Task<ActionResult> CreateParcel([FromBody] ParcelDto parcelDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var createdParcel = await _parcelService.CreateParcelAsync(parcelDto);
-            return CreatedAtAction(nameof(GetParcelsById), new { id = createdParcel.Id }, createdParcel);
         }
     }
 }

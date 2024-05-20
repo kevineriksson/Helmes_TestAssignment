@@ -1,10 +1,10 @@
 
 using Microsoft.EntityFrameworkCore;
-using PostOfficeAPI.Contracts.Repos;
-using PostOfficeAPI.Contracts.Services;
-using PostOfficeAPI.Data;
-using PostOfficeAPI.Repos;
-using PostOfficeAPI.Services;
+using PostOfficeAPI.ApplicationCore.Contracts.Repos;
+using PostOfficeAPI.ApplicationCore.Contracts.Services;
+using PostOfficeAPI.Infra.Data;
+using PostOfficeAPI.Infra.Repos;
+using PostOfficeAPI.Infra.Services;
 
 namespace PostOfficeAPI
 {
