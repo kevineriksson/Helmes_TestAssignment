@@ -2,7 +2,6 @@
 using PostOfficeAPI.ApplicationCore.Contracts.Services;
 using PostOfficeAPI.ApplicationCore.Models;
 using PostOfficeAPI.ApplicationCore.Models.Dto;
-using PostOfficeAPI.Repos;
 
 namespace PostOfficeAPI.Infra.Services
 {
@@ -13,12 +12,9 @@ namespace PostOfficeAPI.Infra.Services
         {
             _shipmentRepo = shipmentRepo;
         }
-
-        public async Task<Shipment> CreateShipmentAsync(ShipmentDto shipmentDto)
-        {
-            return await _shipmentRepo.CreateShipmentAsync(shipmentDto);
-        }
-
+        public async Task<IEnumerable<Shipment>> GetAllShipmentsAsync() => await _shipmentRepo.GetAllShipmentsAsync();
+        public async Task<Shipment> GetShipmentByIdAsync(string id) => await _shipmentRepo.GetShipmentByIdAsync(id);
+        public async Task<Shipment> CreateShipmentAsync(ShipmentDto shipmentDto) => await _shipmentRepo.CreateShipmentAsync(shipmentDto);
         public async Task<bool> DeleteShipmetAsync(string id)
         {
             var shipment = await _shipmentRepo.GetShipmentByIdAsync(id);
@@ -29,17 +25,6 @@ namespace PostOfficeAPI.Infra.Services
             }
             return false;
         }
-
-        public async Task<IEnumerable<Shipment>> GetAllShipmentsAsync()
-        {
-            return await _shipmentRepo.GetAllShipmentsAsync();
-        }
-
-        public async Task<Shipment> GetShipmentByIdAsync(string id)
-        {
-            return await _shipmentRepo.GetShipmentByIdAsync(id);
-        }
-
         public async Task<bool> UpdateShipmentAsync(Shipment shipment)
         {
             shipment = await _shipmentRepo.GetShipmentByIdAsync(shipment.Id);
@@ -54,7 +39,6 @@ namespace PostOfficeAPI.Infra.Services
             {
                 throw new InvalidOperationException("Failed to update the shipment");
             }
-
             return success;
         }
         public async Task FinalizeShipmentAsync(string id)

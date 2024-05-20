@@ -12,10 +12,8 @@ namespace PostOfficeAPI.Infra.Repos
 
         public async Task<IEnumerable<Shipment>> GetAllShipmentsAsync()
             => await _dbSet.ToListAsync();
-
         public async Task<List<Shipment>> GetAllShipmentsWithBags()
             => await _dbSet.Include(dbSet => dbSet.Bags).ToListAsync();
-
         public async Task<Shipment> GetShipmentByIdAsync(string id)
             => await _dbSet.FirstOrDefaultAsync(a => a.Id == id);
         public async Task<Shipment> CreateShipmentAsync(ShipmentDto shipmentDto)
@@ -32,7 +30,6 @@ namespace PostOfficeAPI.Infra.Repos
             await _dbContext.SaveChangesAsync();
             return shipment;
         }
-
         public async Task FinalizeShipmentAsync(string id)
         {
             var shipment = await GetShipmentByIdAsync(id);

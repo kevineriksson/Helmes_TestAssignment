@@ -12,6 +12,5 @@ namespace PostOfficeAPI.ApplicationCore.Models
         public Shipment? Shipment { get; set; }
         public string BagType { get; set; }
         //public bool IsFinalized { get; set; }
-
     }
 }

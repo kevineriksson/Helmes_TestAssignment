@@ -9,10 +9,8 @@ namespace PostOfficeAPI.Infra.Data
         public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Bag> Bags { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.Entity<Bag>(entity =>
             {
                 entity.ToTable("Bags");

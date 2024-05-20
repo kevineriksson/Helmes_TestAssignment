@@ -29,6 +29,17 @@ namespace PostOfficeAPI.Controllers
             if (shipment == null) return NotFound();
             return Ok(shipment);
         }
+        [HttpPost]
+        public async Task<ActionResult> CreateShipment([FromBody] ShipmentDto shipmentDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var createdShipment = await _shipmentService.CreateShipmentAsync(shipmentDto);
+            return CreatedAtAction(nameof(GetAllShipments), new { id = createdShipment.Id }, createdShipment);
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShipment(string id, [FromBody] Shipment shipment)
         {
@@ -49,17 +60,6 @@ namespace PostOfficeAPI.Controllers
                 return NotFound($"Shipment with Id = {id} not found.");
 
             return NoContent();
-        }
-        [HttpPost]
-        public async Task<ActionResult> CreateShipment([FromBody] ShipmentDto shipmentDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var createdShipment = await _shipmentService.CreateShipmentAsync(shipmentDto);
-            return CreatedAtAction(nameof(GetAllShipments), new { id = createdShipment.Id }, createdShipment);
         }
         [HttpPatch("{id}/finalize")]
         public async Task<IActionResult> FinalizeShipment(string id)

@@ -17,11 +17,7 @@ namespace PostOfficeAPI.Infra.Repos
             _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
         }
-
-        public async Task<IEnumerable<T>> Get()
-        {
-            return await _dbSet.ToListAsync();
-        }
+        public async Task<IEnumerable<T>> Get() => await _dbSet.ToListAsync();
         public async Task<T> CreateAsync(T entity)
         {
             _dbSet.Add(entity);

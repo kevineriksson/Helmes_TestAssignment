@@ -1,7 +1,6 @@
 ﻿using PostOfficeAPI.ApplicationCore.Contracts.Repos;
 using PostOfficeAPI.ApplicationCore.Contracts.Services;
 using PostOfficeAPI.ApplicationCore.Models;
-using PostOfficeAPI.Repos;
 
 namespace PostOfficeAPI.Infra.Services
 {
@@ -12,7 +11,9 @@ namespace PostOfficeAPI.Infra.Services
         {
             _bagRepo = bagRepo;
         }
-
+        public async Task<IEnumerable<Bag>> GetAllBagsAsync() => await _bagRepo.GetAllBagsAsync();
+        public async Task<Bag> GetBagByIdAsync(string Id) => await _bagRepo.GetBagByIdAsync(Id);
+        public async Task<List<Bag>> GetBagsByShimpentIdAsync(string Id) => await _bagRepo.GetBagsByShipmentIdAsync(Id);
         public async Task<Bag> CreateBagAsync(Bag bag)
         {
             if (bag is BagWithParcels && ((BagWithParcels)bag).Parcels.Any())
@@ -43,7 +44,6 @@ namespace PostOfficeAPI.Infra.Services
 
             return await _bagRepo.UpdateAsync(existingBag.Id, existingBag);
         }
-
         public async Task<bool> DeleteBagAsync(string id)
         {
             var bag = await _bagRepo.GetBagByIdAsync(id);
@@ -58,21 +58,6 @@ namespace PostOfficeAPI.Infra.Services
              }*/
 
             return await _bagRepo.DeleteAsync(id);
-        }
-
-        public async Task<IEnumerable<Bag>> GetAllBagsAsync()
-        {
-            return await _bagRepo.GetAllBagsAsync();
-        }
-
-        public async Task<Bag> GetBagByIdAsync(string Id)
-        {
-            return await _bagRepo.GetBagByIdAsync(Id);
-        }
-
-        public async Task<List<Bag>> GetBagsByShimpentIdAsync(string Id)
-        {
-            return await _bagRepo.GetBagsByShipmentIdAsync(Id);
         }
     }
 }

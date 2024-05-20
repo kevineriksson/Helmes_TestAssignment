@@ -8,7 +8,6 @@ namespace PostOfficeAPI.Infra.Repos
     public class BagRepo : BaseRepo<Bag>, IBagRepo
     {
         public BagRepo(AppDbContext dbContext) : base(dbContext) { }
-
         public async Task<List<Bag>> GetBagsByShipmentIdAsync(string shipmentId)
             => await _dbSet
                 .Where(a => a.ShipmentId == shipmentId)
@@ -23,7 +22,6 @@ namespace PostOfficeAPI.Infra.Repos
 
         public async Task<Bag> GetBagByIdAsync(string id)
             => await _dbSet.FirstOrDefaultAsync(a => a.Id == id);
-
         public async Task<IEnumerable<Bag>> GetAllBagsAsync()
             => await _dbSet.ToListAsync();
     }
