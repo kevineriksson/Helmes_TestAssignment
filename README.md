@@ -35,3 +35,11 @@ Accessing the Application
 
 1. Open your browser and navigate to `http://localhost:4200`.
 2. The frontend should be able to communicate with the API running on `https://localhost:7076`.
+
+********************
+
+The project is unfortunately not finished completely and some requirements are missing.
+
+The current solution only has the ability to create a shipment, add bags to it (either letter or parcel) and if parcel bag then add parcels to it. Also there is the ability to delete a shipment that deletes all the bags and parcels connected to it.
+
+(To add parcels to a bag, first save the bag and then the ability to add parcels will appear)
